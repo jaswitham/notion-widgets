@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Toggle Button</title>
+    <style>
+        .date-button {
+            background: #bfb7d4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(191, 183, 212, 0.3);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .date-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(191, 183, 212, 0.4);
+            background: #c9c2d6;
+        }
+        
+        .date-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(191, 183, 212, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <button id="dateButton" class="date-button"></button>
+
+    <script>
+        const button = document.getElementById('dateButton');
+        let currentDate = new Date();
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function updateButton() {
+            button.textContent = formatDate(currentDate);
+        }
+
+        button.addEventListener('click', function() {
+            // Add 21 days to currentDate
+            currentDate.setDate(currentDate.getDate() + 21);
+            updateButton();
+        });
+
+        // Initialize with today's date
+        updateButton();
+    </script>
+</body>
+</html>
