@@ -6,7 +6,7 @@
     <title>Date Toggle Button</title>
     <style>
         .date-button {
-            background: #bfb7d4;
+            background: #c66f80;
             color: white;
             border: none;
             padding: 6px 12px;
@@ -60,7 +60,12 @@
 
     <script>
         const button = document.getElementById('dateButton');
-        let currentDate = new Date();
+        const STORAGE_KEY = 'notionWidgetDate';
+
+        // Load date from localStorage or use today's date
+        let currentDate = localStorage.getItem(STORAGE_KEY)
+            ? new Date(localStorage.getItem(STORAGE_KEY))
+            : new Date();
 
         function formatDate(date) {
             return date.toLocaleDateString('en-US', {
@@ -78,10 +83,27 @@
         button.addEventListener('click', function() {
             // Add 21 days to currentDate
             currentDate.setDate(currentDate.getDate() + 21);
+            // Save new date to localStorage
+            localStorage.setItem(STORAGE_KEY, currentDate.toISOString());
             updateButton();
         });
 
-        // Initialize with today's date
+        button.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            const input = prompt("Enter a new date (YYYY-MM-DD):", currentDate.toISOString().slice(0,10));
+            if (input) {
+                const newDate = new Date(input);
+                if (!isNaN(newDate)) {
+                    currentDate = newDate;
+                    localStorage.setItem(STORAGE_KEY, currentDate.toISOString());
+                    updateButton();
+                } else {
+                    alert("Invalid date format.");
+                }
+            }
+        });
+
+        // Initialize with saved or today's date
         updateButton();
     </script>
 </body>
