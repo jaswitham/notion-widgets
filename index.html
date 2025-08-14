@@ -35,14 +35,14 @@
             padding: 4px 8px;
             font-size: 15px;
             border-radius: 6px;
-            border: 1px solid #bfb7d4;
+            border: 1px solid transparent; /* Invisible border by default */
             width: 220px;
             text-align: center;
             outline: none;
             transition: border-color 0.2s;
         }
         #editableTextbox:focus {
-            border-color: transparent;
+            border-color: #bfb7d4; /* Show border when focused */
             outline: none;
             box-shadow: none;
         }
