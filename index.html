@@ -58,6 +58,10 @@
             gap: 8px;
         }
 
+        #colorInput {
+            margin-left: 8px;
+        }
+
         #dateInput {
             padding: 4px 8px;
             font-size: 15px;
@@ -121,6 +125,11 @@
         #showEditBtn:hover {
             opacity: 1;
         }
+
+        #hexColorInput {
+            margin-left: 8px;
+            padding: 4px 8px;
+        }
     </style>
 </head>
 <body>
@@ -130,21 +139,25 @@
         <button id="showEditBtn">Edit Date</button>
         <div id="editDateContainer">
             <input type="date" id="dateInput">
+            <input type="text" id="hexColorInput" placeholder="#c66f80" style="width:80px; font-size:15px; border-radius:6px; border:1px solid #ccc; text-align:center;">
             <button id="saveDateBtn">Save</button>
         </div>
     </div>
     <script>
         const button = document.getElementById('dateButton');
         const STORAGE_KEY = 'notionWidgetDate';
+        const COLOR_KEY = 'notionWidgetColor';
         const editDateContainer = document.getElementById('editDateContainer');
         const dateInput = document.getElementById('dateInput');
+        const hexColorInput = document.getElementById('hexColorInput');
         const saveDateBtn = document.getElementById('saveDateBtn');
         const showEditBtn = document.getElementById('showEditBtn');
 
-        // Load date from localStorage or use today's date
+        // Load date and color from localStorage or use defaults
         let currentDate = localStorage.getItem(STORAGE_KEY)
             ? new Date(localStorage.getItem(STORAGE_KEY))
             : new Date();
+        let currentColor = localStorage.getItem(COLOR_KEY) || '#c66f80';
 
         function formatDate(date) {
             return date.toLocaleDateString('en-US', {
@@ -157,12 +170,11 @@
 
         function updateButton() {
             button.textContent = formatDate(currentDate);
+            button.style.background = currentColor;
         }
 
         button.addEventListener('click', function() {
-            // Add 21 days to currentDate
             currentDate.setDate(currentDate.getDate() + 21);
-            // Save new date to localStorage
             localStorage.setItem(STORAGE_KEY, currentDate.toISOString());
             updateButton();
         });
@@ -170,21 +182,29 @@
         showEditBtn.addEventListener('click', function() {
             editDateContainer.style.display = 'flex';
             dateInput.value = currentDate.toISOString().slice(0,10);
+            hexColorInput.value = currentColor;
         });
 
         saveDateBtn.addEventListener('click', function() {
             const newDate = new Date(dateInput.value);
+            const newColor = hexColorInput.value;
+            const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
             if (!isNaN(newDate)) {
                 currentDate = newDate;
                 localStorage.setItem(STORAGE_KEY, currentDate.toISOString());
-                updateButton();
-                editDateContainer.style.display = 'none';
-            } else {
-                alert("Invalid date format.");
             }
+            if (hexPattern.test(newColor)) {
+                currentColor = newColor;
+                localStorage.setItem(COLOR_KEY, currentColor);
+            } else {
+                alert("Invalid hex color code.");
+                return;
+            }
+            updateButton();
+            editDateContainer.style.display = 'none';
         });
 
-        // Initialize with saved or today's date
+        // Initialize with saved or today's date and color
         updateButton();
     </script>
 </body>
